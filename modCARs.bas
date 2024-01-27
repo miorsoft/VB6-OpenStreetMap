@@ -162,7 +162,9 @@ Public Sub MAINLOOP()
 
             If DoSaveFrame Then
                 ' SaveJPG frmMain.PIC.Image, App.Path & "\Frames\" & Format(Frame, "0000") & ".jpg", 95
-                SRF.WriteContentToJpgFile App.Path & "\Frames\" & Format(Frame, "0000") & ".jpg", 100
+                ' SRF.WriteContentToJpgFile App.Path & "\Frames\" & Format(Frame, "0000") & ".jpg", 100
+                SRF.WriteContentToPngFile App.Path & "\Frames\" & Format(Frame, "0000") & ".png"
+                
                 Frame = Frame + 1
             End If
 

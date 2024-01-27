@@ -136,7 +136,7 @@ Begin VB.Form frmMain
          Width           =   1455
       End
       Begin VB.CheckBox chSave 
-         Caption         =   "JPG"
+         Caption         =   "PNG"
          Height          =   255
          Left            =   120
          TabIndex        =   13

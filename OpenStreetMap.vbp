@@ -1,7 +1,7 @@
 Type=Exe
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\System32\stdole2.tlb#OLE Automation
 Reference=*\G{F5078F18-C551-11D3-89B9-0000F81FE221}#6.0#0#C:\Windows\System32\msxml6.dll#Microsoft XML, v6.0
-Reference=*\G{CE4F61C1-7072-4180-9107-B38562AB6ABE}#167.0#0#..\____PhotoModularFX_0_3\BIN\RC6.dll#RC6
+Reference=*\G{CE4F61C1-7072-4180-9107-B38562AB6ABE}#167.0#0#..\..\VB6\____PhotoModularFX_0_3\BIN\RC6.dll#RC6
 Form=frmMain.frm
 Module=modOSM; modOSM.bas
 Module=modLatLonConversion; modLatLonConversion.bas
