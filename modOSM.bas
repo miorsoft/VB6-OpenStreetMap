@@ -584,7 +584,7 @@ Public Sub PURGEAndSave(FN As String)
     Dim J         As Long
     Dim K         As Long
 
-    '    Dim PREV   As Long
+    Dim sx#, sy#, sc#
 
     Dim NID       As Currency
     Dim DX#, DY#, A#
@@ -596,7 +596,7 @@ Public Sub PURGEAndSave(FN As String)
         With WAY(I)
             For J = 1 To .NN
                 'NID = FindNodeID( .N(J))
-                NID = NODESbyFileID.Item(.N(J)) '<----------------------------- !!!
+                NID = NODESbyFileID.Item(.N(J))    '<----------------------------- !!!
 
                 .N(J) = NID
                 '  .N(J) = FindNodeID( .N(J), PREV)
@@ -605,6 +605,11 @@ Public Sub PURGEAndSave(FN As String)
                 If .isDRIVEABLE Then
                     If .Layer > maxLayer Then maxLayer = .Layer
                     If .Layer < minLayer Then minLayer = .Layer
+
+                    '                    sx = sx + Node(J).X
+                    '                    sy = sy + Node(J).Y
+                    '                    sc = sc + 1
+
                 End If
             Next
 
@@ -620,6 +625,8 @@ Public Sub PURGEAndSave(FN As String)
                 .SegAngle(J) = Round(A, 4)
                 .SegDX(J) = Round(Cos(A), 4)
                 .SegDY(J) = Round(Sin(A), 4)
+
+
             Next
             For J = 1 To .NN
                 '            For J = 2 To .NN - 1

@@ -155,7 +155,7 @@ Friend Sub RANDOMstart()
     Do
         STARTnode = Int(1 + Rnd * NNode)
     Loop While Node(STARTnode).dIsWay = False
-    
+
 
     Xrear = Node(STARTnode).X
     yrear = Node(STARTnode).Y
@@ -194,12 +194,12 @@ AG:
     Do
         Do
             ENDnode = Int(1 + Rnd * NNode)
-        Loop While Node(ENDnode).dIsWay = False 'Or Node(ENDnode).NNext < 1    '2
-        
+        Loop While Node(ENDnode).dIsWay = False    'Or Node(ENDnode).NNext < 1    '2
+
         dijPATH = DJ.DIJKSTRA(STARTnode, ENDnode)
-        
+
         Try = Try + 1
-    
+
     Loop While dijPATH.NN = 0 And Try < 2
 
     If dijPATH.NN = 0 Then RANDOMstart: GoTo AG
@@ -241,6 +241,7 @@ Friend Sub DRAWCC()
                      scr2WorldX1, scr2WorldY1) Then
 
 
+        STATCars = STATCars + 1
 
 
 
@@ -732,7 +733,8 @@ Friend Sub DRIVE3()
 
 
 
-        Steer = Steer * 0.95 + AngleDIFF(ANG + Steer, ANGtoGO) * 0.05
+
+        Steer = Steer * 0.96 + AngleDIFF(ANG + Steer, ANGtoGO) * 0.04
 
 
 

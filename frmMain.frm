@@ -34,7 +34,7 @@ Begin VB.Form frmMain
       Width           =   2415
       Begin VB.Label labSTAT 
          Caption         =   "--------------------------------------"
-         Height          =   1815
+         Height          =   3375
          Left            =   0
          TabIndex        =   22
          Top             =   0
@@ -63,11 +63,11 @@ Begin VB.Form frmMain
       Width           =   2415
       Begin VB.CheckBox chkTargetAll 
          Caption         =   "Same Target for every car"
-         Height          =   375
+         Height          =   495
          Left            =   120
          TabIndex        =   25
          ToolTipText     =   "On mouse right click set same target for all the cars"
-         Top             =   8880
+         Top             =   8760
          Width           =   1455
       End
       Begin VB.TextBox txtFollow 
@@ -333,7 +333,7 @@ Private Sub chkShowPath_Click()
 End Sub
 
 Private Sub chkTargetAll_Click()
-TargetAllCars = chkTargetAll = vbChecked
+    TargetAllCars = chkTargetAll = vbChecked
 End Sub
 
 Private Sub chSave_Click()
@@ -451,7 +451,9 @@ Private Sub Command1_Click()
     sgGirdSize = EastOwestMapExtension \ 25
     If sgGirdSize > 1000 Then sgGirdSize = 1000
     If sgGirdSize < 250 Then sgGirdSize = 250
-    GRID.Init EastOwestMapExtension + 1, NorthSouthMapExtension + 1, sgGirdSize
+    '    GRID.Init EastOwestMapExtension + 1, NorthSouthMapExtension + 1, sgGirdSize
+    QT.Setup 0, 0, EastOwestMapExtension, NorthSouthMapExtension, 4
+
 
 
     PURGEAndSave App.Path & "\Out.txt"
@@ -604,7 +606,10 @@ Private Sub Form_Load()
     If Dir(App.Path & "\Frames", vbDirectory) = vbNullString Then MkDir App.Path & "\Frames"
     If Dir(App.Path & "\Frames\*.*") <> vbNullString Then Kill App.Path & "\Frames\*.*"
 
-    Set GRID = New cSpatialGrid
+    '    Set GRID = New cSpatialGrid
+    Set QT = New cQuadTree
+
+
 
     LoadImages
 
@@ -654,6 +659,7 @@ End Function
 Private Sub Form_Resize()
 
     'https://stackoverflow.com/questions/70758773/how-to-automatically-resize-or-reposition-controls-on-a-form-when-the-form-is-re
+    If WindowState = 1 Then Exit Sub
 
 
     PIC.Height = (frmMain.ScaleHeight \ 128) * 128    ' 1024             '1024 '720
@@ -783,10 +789,10 @@ Private Sub PIC_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As
         If CAR(Follow).GetPATHNN = 0 Then CAR(Follow).RANDOMend
 
         If TargetAllCars Then
-                For I = 1 To Ncars
-                    CAR(I).SetEndNode N1
-                    If CAR(I).GetPATHNN = 0 Then CAR(I).RANDOMend
-                Next
+            For I = 1 To Ncars
+                CAR(I).SetEndNode N1
+                If CAR(I).GetPATHNN = 0 Then CAR(I).RANDOMend
+            Next
         End If
 
     End If
@@ -808,7 +814,8 @@ Private Sub Command5_Click()      ' CMD LOADPURGED
     sgGirdSize = EastOwestMapExtension \ 25
     If sgGirdSize > 1000 Then sgGirdSize = 1000
     If sgGirdSize < 250 Then sgGirdSize = 250
-    GRID.Init EastOwestMapExtension + 1, NorthSouthMapExtension + 1, sgGirdSize
+    '    GRID.Init EastOwestMapExtension + 1, NorthSouthMapExtension + 1, sgGirdSize
+    QT.Setup 0, 0, EastOwestMapExtension, NorthSouthMapExtension, 4
 
     InitDraw
     'DRAW

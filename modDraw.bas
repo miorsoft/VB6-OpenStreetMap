@@ -57,6 +57,7 @@ Public scr2WorldY1#
 Public STATSegs   As Long
 Public STATbuild  As Long
 Public STATPolyLines As Long
+Public STATCars   As Long
 
 Private BuildingPolygon As cArrayList
 
@@ -133,11 +134,11 @@ Public Sub InitDraw()
     ClipTOP = -25
     ClipRIGHT = scrMaxX + 25
     ClipBOTTOM = scrMaxY + 25
-'Show/Debug Clipline:
-'    ClipLEFT = 150
-'    ClipTOP = 150
-'    ClipRIGHT = scrMaxX - 150
-'    ClipBOTTOM = scrMaxY - 150
+    'Show/Debug Clipline:
+    '    ClipLEFT = 150
+    '    ClipTOP = 150
+    '    ClipRIGHT = scrMaxX - 150
+    '    ClipBOTTOM = scrMaxY - 150
 
 
 
@@ -165,11 +166,14 @@ Public Sub InitDraw()
     'PanX = XtoScreen((mapMaxX + MinX) * 0.5)
     'PanY = YtoScreen((mapMaxY + MinY) * 0.5)
 
+    ' V1 2024
     PanX = XtoScreen(mapMaxX * 0.5)
     PanY = YtoScreen(mapMaxY * 0.5)
-
     CENPanX = PanX
     CENPanY = PanY
+
+
+
 
     If KX < KY Then KY = KX Else: KX = KY
 
@@ -237,6 +241,7 @@ Public Sub DRAWMAP()
         STATSegs = 0
         STATbuild = 0
         STATPolyLines = 0
+        STATCars = 0
 
 
         Dash1 = Zoom * 4          '4          '2.5
@@ -975,6 +980,7 @@ Public Sub DRAWMAPandCARS()
     STATSegs = 0
     STATbuild = 0
     STATPolyLines = 0
+    STATCars = 0
 
 
     Dash1 = Zoom * 4              '4          '2.5
@@ -1001,12 +1007,12 @@ Public Sub DRAWMAPandCARS()
     CC.SetDashes 0, 1E+99
 
 
-'''CameraAng = CameraAng * 0.98 - 0.02 * AngleDIFF((-CAR(Follow).ANG - PIh), 0)
-''CameraAng = CameraAng * 0.99 - 0.01 * AngleDIFF180((-CAR(Follow).ANG), PIh)
-''CC.save
-''CC.TranslateDrawings scrMaxX * 0.5, scrMaxY * 0.5
-''CC.RotateDrawings CameraAng
-''CC.TranslateDrawings -scrMaxX * 0.5, -scrMaxY * 0.5
+    '''CameraAng = CameraAng * 0.98 - 0.02 * AngleDIFF((-CAR(Follow).ANG - PIh), 0)
+    ''CameraAng = CameraAng * 0.99 - 0.01 * AngleDIFF180((-CAR(Follow).ANG), PIh)
+    ''CC.save
+    ''CC.TranslateDrawings scrMaxX * 0.5, scrMaxY * 0.5
+    ''CC.RotateDrawings CameraAng
+    ''CC.TranslateDrawings -scrMaxX * 0.5, -scrMaxY * 0.5
 
 
 
@@ -1542,7 +1548,7 @@ Public Sub DRAWMAPandCARS()
         Next
     End If
 
-'CC.Restore
+    'CC.Restore
 
 
 End Sub

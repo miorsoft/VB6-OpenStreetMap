@@ -57,10 +57,10 @@ Private Sub DIJKSTRAvisit(ByVal VisitNode As Long)
     Dim ToCost    As Double
     Dim I         As Long
     Dim IdxNextNode As Long
-    Dim toTargetDX        As Double
-    Dim toTargetDY        As Double
-    Dim ToSegDX      As Double
-    Dim ToSegDY      As Double
+    Dim toTargetDX As Double
+    Dim toTargetDY As Double
+    Dim ToSegDX   As Double
+    Dim ToSegDY   As Double
     Dim D         As Double
     Dim DIRECTIONCost As Double
     Dim SEG       As Long

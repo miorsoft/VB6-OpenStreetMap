@@ -25,7 +25,7 @@ Private Function OutCode(ByVal X As Double, ByVal Y As Double) As tOUTcode
 End Function
 
 
-Public Function CLIPLINEcc(X0 As Double, y0 As Double, X1 As Double, Y1 As Double) As Boolean
+Public Function CLIPLINEcc(X0 As Double, Y0 As Double, X1 As Double, Y1 As Double) As Boolean
     Dim oCode0    As tOUTcode
     Dim oCode1    As tOUTcode
     Dim oCodeOUT  As tOUTcode
@@ -35,7 +35,7 @@ Public Function CLIPLINEcc(X0 As Double, y0 As Double, X1 As Double, Y1 As Doubl
 
     '    Dim Accept    As Boolean
 
-    oCode0 = OutCode(X0, y0)
+    oCode0 = OutCode(X0, Y0)
     oCode1 = OutCode(X1, Y1)
 
     Do
@@ -53,18 +53,18 @@ Public Function CLIPLINEcc(X0 As Double, y0 As Double, X1 As Double, Y1 As Doubl
         End If
 
         If (oCodeOUT And kTOP) Then
-            X = X0 + (X1 - X0) * (ClipBOTTOM - y0) / (Y1 - y0)
+            X = X0 + (X1 - X0) * (ClipBOTTOM - Y0) / (Y1 - Y0)
             Y = ClipBOTTOM
         ElseIf (oCodeOUT And kBOTTOM) Then
-            X = X0 + (X1 - X0) * (ClipTOP - y0) / (Y1 - y0)
+            X = X0 + (X1 - X0) * (ClipTOP - Y0) / (Y1 - Y0)
             '            Y = 0
             Y = ClipTOP
         ElseIf (oCodeOUT And kRIGHT) Then
-            Y = y0 + (Y1 - y0) * (ClipRIGHT - X0) / (X1 - X0)
+            Y = Y0 + (Y1 - Y0) * (ClipRIGHT - X0) / (X1 - X0)
             X = ClipRIGHT
             'ElseIf (oCodeOUT And kLEFT) <> 0 Then
         Else
-            Y = y0 + (Y1 - y0) * (ClipLEFT - X0) / (X1 - X0)
+            Y = Y0 + (Y1 - Y0) * (ClipLEFT - X0) / (X1 - X0)
             '            X = 0
             X = ClipLEFT
         End If
@@ -72,8 +72,8 @@ Public Function CLIPLINEcc(X0 As Double, y0 As Double, X1 As Double, Y1 As Doubl
         '------------
         If oCodeOUT = oCode0 Then
             X0 = X
-            y0 = Y
-            oCode0 = OutCode(X0, y0)
+            Y0 = Y
+            oCode0 = OutCode(X0, Y0)
         Else
             X1 = X
             Y1 = Y

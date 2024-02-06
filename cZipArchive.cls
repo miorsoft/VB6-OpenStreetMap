@@ -37,11 +37,11 @@ Event Progress(ByVal FileIdx As Long, ByVal Current As Long, ByVal Total As Long
 Event Error(ByVal FileIdx As Long, Source As String, Description As String, Cancel As Boolean)
 #If ImplCompress Then
     Event BeforeCompress(ByVal FileIdx As Long, Level As Long, SkipFile As Boolean, Cancel As Boolean)
-#End If                                          ' ImplCompress
+#End If                           ' ImplCompress
 #If ImplDecompress Then
     Event BeforeExtract(ByVal FileIdx As Long, File As Variant, SkipFile As Boolean, Cancel As Boolean)
     Event ExtractComplete(ByVal FileIdx As Long, File As Variant)
-#End If                                          ' ImplDecompress
+#End If                           ' ImplDecompress
 
 '=========================================================================
 ' Thunk data
@@ -145,10 +145,10 @@ Private Declare Function GetStdHandle Lib "kernel32" (ByVal nStdHandle As Long) 
     Private Declare Function FileTimeToDosDateTime Lib "kernel32" (lpFileTime As FILETIME, ByVal lpFatDate As Long, ByVal lpFatTime As Long) As Long
     Private Declare Function ApiEmptyByteArray Lib "oleaut32" Alias "SafeArrayCreateVector" (Optional ByVal VarType As VbVarType = vbByte, Optional ByVal Low As Long = 0, Optional ByVal Count As Long = 0) As Byte()
     Private Declare Function FindNextFile Lib "kernel32" Alias "FindNextFileW" (ByVal hFindFile As Long, ByVal lpFindFileData As Long) As Long
-#End If                                          ' ImplCompress
+#End If                           ' ImplCompress
 #If ImplDecompress Then
     Private Declare Function DosDateTimeToFileTime Lib "kernel32" (ByVal wFatDate As Long, ByVal wFatTime As Long, lpFileTime As FILETIME) As Long
-#End If                                          ' ImplDecompress
+#End If                           ' ImplDecompress
 #If ImplCrypto Then
     Private Declare Function CoCreateGuid Lib "ole32" (pguid As Any) As Long
     Private Declare Function BCryptOpenAlgorithmProvider Lib "bcrypt" (phAlgorithm As Long, ByVal pszAlgId As Long, ByVal pszImplementation As Long, ByVal dwFlags As Long) As Long
@@ -163,14 +163,14 @@ Private Declare Function GetStdHandle Lib "kernel32" (ByVal nStdHandle As Long) 
     Private Declare Function BCryptDestroyHash Lib "bcrypt" (ByVal hHash As Long) As Long
     Private Declare Function BCryptHashData Lib "bcrypt" (ByVal hHash As Long, pbInput As Any, ByVal cbInput As Long, ByVal dwFlags As Long) As Long
     Private Declare Function BCryptFinishHash Lib "bcrypt" (ByVal hHash As Long, pbOutput As Any, ByVal cbOutput As Long, ByVal dwFlags As Long) As Long
-#End If                                          ' ImplCrypto
+#End If                           ' ImplCrypto
 #If ImplUseShared = 0 Then
     Private Declare Function FormatMessage Lib "kernel32" Alias "FormatMessageA" (ByVal dwFlags As Long, lpSource As Long, ByVal dwMessageId As Long, ByVal dwLanguageId As Long, ByVal lpBuffer As String, ByVal nSize As Long, Args As Any) As Long
     Private Declare Function GetFileAttributes Lib "kernel32" Alias "GetFileAttributesW" (ByVal lpFileName As Long) As Long
     Private Declare Function CreateDirectory Lib "kernel32" Alias "CreateDirectoryW" (ByVal lpPathName As Long, ByVal lpSecurityAttributes As Long) As Long
     Private Declare Function CryptBinaryToString Lib "crypt32" Alias "CryptBinaryToStringW" (ByVal pbBinary As Long, ByVal cbBinary As Long, ByVal dwFlags As Long, ByVal pszString As Long, ByRef pcchString As Long) As Long
     Private Declare Function CryptStringToBinary Lib "crypt32" Alias "CryptStringToBinaryW" (ByVal pszString As Long, ByVal cchString As Long, ByVal dwFlags As Long, ByVal pbBinary As Long, ByRef pcbBinary As Long, ByRef pdwSkip As Long, ByRef pdwFlags As Long) As Long
-#End If                                          ' Not ImplUseShared
+#End If                           ' Not ImplUseShared
 
 Private Type FILETIME
     dwLowDateTime As Long
@@ -260,10 +260,10 @@ Private m_lCurrentFile As Long
 #If ImplDecompress Then
     Private m_sComment As String
     Private m_vArchiveFile As Variant
-#End If                                          ' ImplDecompress
+#End If                           ' ImplDecompress
 #If ImplCrypto Then
     Private m_uCrypto As UcsZipCryptoType
-#End If                                          ' ImplCrypto
+#End If                           ' ImplCrypto
 
 Private Type UcsVfsFileType
     Handle        As Long
@@ -329,69 +329,69 @@ Private Enum UcsRelocIndexesEnum
 End Enum
 
 Private Enum UcsHeaderFlagsEnum
-    ucsZcfEncrypted = 2 ^ 0                      ' If set, indicates that the file is encrypted
+    ucsZcfEncrypted = 2 ^ 0       ' If set, indicates that the file is encrypted
     ucsZcfCompressOptionMask = 2 ^ 1 Or 2 ^ 2    ' 0 - normal, 1 - maximum, 2 - fast, 3 - super fast
-    ucsZcfHasDataDescriptor = 2 ^ 3              ' Values are put in the data descriptor immediately following the compressed data
-    ucsZcfStrongEncrypted = 2 ^ 6                ' Strong encryption
-    ucsZcfUseUtf8 = 2 ^ 11                       ' Language encoding flag (EFS)
+    ucsZcfHasDataDescriptor = 2 ^ 3    ' Values are put in the data descriptor immediately following the compressed data
+    ucsZcfStrongEncrypted = 2 ^ 6    ' Strong encryption
+    ucsZcfUseUtf8 = 2 ^ 11        ' Language encoding flag (EFS)
 End Enum
 
 Private Type UcsLocalHeaderType
-    Signature     As Long                        ' Signature
-    VerExt        As Integer                     ' version needed to extract
-    Flags         As Integer                     ' encrypt and compression flags
-    Method        As Integer                     ' compression method
-    FTime         As Integer                     ' time last modifies, dos format
-    FDate         As Integer                     ' date last modifies, dos format
+    Signature     As Long         ' Signature
+    VerExt        As Integer      ' version needed to extract
+    Flags         As Integer      ' encrypt and compression flags
+    Method        As Integer      ' compression method
+    FTime         As Integer      ' time last modifies, dos format
+    FDate         As Integer      ' date last modifies, dos format
     '--- padding
-    Crc32         As Long                        ' CRC32 for uncompressed file
-    CSize         As Long                        ' compressed size
-    USize         As Long                        ' uncompressed size
-    LenFname      As Integer                     ' Length filename
-    LenExt        As Integer                     ' Length for extra field
+    Crc32         As Long         ' CRC32 for uncompressed file
+    CSize         As Long         ' compressed size
+    USize         As Long         ' uncompressed size
+    LenFname      As Integer      ' Length filename
+    LenExt        As Integer      ' Length for extra field
 End Type
 
 Private Type UcsCentralHeaderType
-    Signature     As Long                        ' Signature
-    VerMade       As Integer                     ' version made by
-    VerExt        As Integer                     ' version needed to extract
-    Flags         As Integer                     ' encrypt and compression flags
-    Method        As Integer                     ' compression method
-    FTime         As Integer                     ' time last modifies, dos format
-    FDate         As Integer                     ' date last modifies, dos format
+    Signature     As Long         ' Signature
+    VerMade       As Integer      ' version made by
+    VerExt        As Integer      ' version needed to extract
+    Flags         As Integer      ' encrypt and compression flags
+    Method        As Integer      ' compression method
+    FTime         As Integer      ' time last modifies, dos format
+    FDate         As Integer      ' date last modifies, dos format
     '--- padding
-    Crc32         As Long                        ' CRC32 for uncompressed file
-    CSize         As Long                        ' compressed size
-    USize         As Long                        ' uncompressed size
-    LenFname      As Integer                     ' Length filename
-    LenExt        As Integer                     ' Length for extra field
-    LenCom        As Integer                     ' Length for comment field
-    DiskStart     As Integer                     ' start disk number
-    AttribI       As Integer                     ' internal file attributes
+    Crc32         As Long         ' CRC32 for uncompressed file
+    CSize         As Long         ' compressed size
+    USize         As Long         ' uncompressed size
+    LenFname      As Integer      ' Length filename
+    LenExt        As Integer      ' Length for extra field
+    LenCom        As Integer      ' Length for comment field
+    DiskStart     As Integer      ' start disk number
+    AttribI       As Integer      ' internal file attributes
     '--- padding
-    AttribX       As Long                        ' external file attributes
-    Offset        As Long                        ' relative offset of local header
+    AttribX       As Long         ' external file attributes
+    Offset        As Long         ' relative offset of local header
 End Type
 
 Private Type UcsEndHeaderType
-    Signature     As Long                        ' Signature
-    DiskNum       As Integer                     ' This disk number
-    DiskStart     As Integer                     ' Start disk number
-    Entries       As Integer                     ' Entries on this disk
-    TotEntr       As Integer                     ' Number of total entries
-    CenSize       As Long                        ' Size of entire cetral directory
-    CenOff        As Long                        ' Offset of central on starting disk
-    LenCom        As Integer                     ' Length of comment field
+    Signature     As Long         ' Signature
+    DiskNum       As Integer      ' This disk number
+    DiskStart     As Integer      ' Start disk number
+    Entries       As Integer      ' Entries on this disk
+    TotEntr       As Integer      ' Number of total entries
+    CenSize       As Long         ' Size of entire cetral directory
+    CenOff        As Long         ' Offset of central on starting disk
+    LenCom        As Integer      ' Length of comment field
 End Type
 
 Private Type UcsAesExtraDataType
-    HeaderId      As Integer                     ' Extra field header ID (0x9901)
-    Size          As Integer                     ' Data size (currently 7, but subject to possible increase in the future)
-    Version       As Integer                     ' Integer version number specific to the zip vendor
-    VendorId      As Integer                     ' 2-character vendor ID
-    Strength      As Byte                        ' Integer mode value indicating AES encryption strength
+    HeaderId      As Integer      ' Extra field header ID (0x9901)
+    Size          As Integer      ' Data size (currently 7, but subject to possible increase in the future)
+    Version       As Integer      ' Integer version number specific to the zip vendor
+    VendorId      As Integer      ' 2-character vendor ID
+    Strength      As Byte         ' Integer mode value indicating AES encryption strength
     '--- padding
-    Method        As Integer                     ' The actual compression method used to compress the file
+    Method        As Integer      ' The actual compression method used to compress the file
 End Type
 
 Private Type UcsFileInfo
@@ -412,7 +412,7 @@ Private Type UcsFileInfo
     Aes           As UcsAesExtraDataType
     DecDat        As Byte
     Password      As String
-    #End If                                      ' ImplCrypto
+    #End If                       ' ImplCrypto
 End Type
 
 Private Type UcsZipCryptoType
@@ -464,7 +464,7 @@ Public Property Get Comment() As String
     Comment = m_sComment
 End Property
 
-#End If                                          ' ImplDecompress
+#End If                           ' ImplDecompress
 
 '=========================================================================
 ' Methods
@@ -1060,7 +1060,7 @@ Private Function pvToOemString(sText As String, Optional ByVal lCodePage As Long
     End If
 End Function
 
-#End If                                          ' ImplCompress
+#End If                           ' ImplCompress
 
 #If ImplDecompress Then
 
@@ -1175,7 +1175,7 @@ Public Function OpenArchive(ArchiveFile As Variant) As Boolean
                         Call CopyMemory(.DecDat, ByVal UnsignedAdd(VarPtr(uCentral.CSize), -1), 1)
                     End If
                 End If
-            #End If                              ' ImplCrypto
+            #End If               ' ImplCrypto
         End With
     Next
     '--- commit archive info to member vars
@@ -1219,7 +1219,7 @@ Public Function Extract( _
         Dim lSaltSize As Long
         Dim baSalt() As Byte
         Dim nPassVer As Integer
-    #End If                                      ' ImplCrypto
+    #End If                       ' ImplCrypto
 
     On Error GoTo EH
     pvSetError
@@ -1364,7 +1364,7 @@ Public Function Extract( _
                         End If
                     #Else
                         Err.Raise vbObjectError, , ERR_UNSUPPORTED_ENCRYPTION
-                    #End If                      ' ImplCrypto
+                    #End If       ' ImplCrypto
                 End If
                 If .Method = LNG_METHOD_DEFLATE Then
                     hCtx = CallWindowProc(m_uRtbl.DecompressInit, VarPtr(m_uRtbl))
@@ -1372,7 +1372,7 @@ Public Function Extract( _
                         Err.Raise vbObjectError, , ERR_INIT_DECOMPRESSOR
                     End If
                 End If
-                Do                               ' While lRead < .CompressedSize
+                Do                ' While lRead < .CompressedSize
                     RaiseEvent Progress(lIdx, lRead, .CompressedSize, m_bCancel)
                     If m_bCancel Then
                         m_sLastError = ERR_USER_CANCEL
@@ -1401,7 +1401,7 @@ Public Function Extract( _
                                 End If
                             End If
                         End If
-                    #End If                      ' ImplCrypto
+                    #End If       ' ImplCrypto
                     lRead = lRead + lResult
                     If .Method = LNG_METHOD_DEFLATE Then
                         uBuf.InBlock = VarPtr(baBuffer(0))
@@ -1413,7 +1413,7 @@ Public Function Extract( _
                         pvVfsWrite uFile, uBuf.OutBlock, uBuf.OutLen
                         Call CoTaskMemFree(uBuf.OutBlock)
                         uBuf.OutBlock = 0
-                    Else                         ' If .Method = LNG_METHOD_STORE Then
+                    Else          ' If .Method = LNG_METHOD_STORE Then
                         If pCrc32 <> 0 Then
                             Call CallWindowProc(m_uRtbl.CalcCrc32, VarPtr(m_uRtbl), VarPtr(baBuffer(0)), lResult, pCrc32)
                         End If
@@ -1433,7 +1433,7 @@ Public Function Extract( _
                             Err.Raise vbObjectError, , ERR_INVALID_AUTHCODE
                         End If
                     End If
-                #End If                          ' ImplCrypto
+                #End If           ' ImplCrypto
                 If pCrc32 <> 0 Then
                     If .Crc32 <> (lCrc32 Xor -1) Then
                         Err.Raise vbObjectError, , ERR_CRC_CHECK
@@ -1606,9 +1606,9 @@ Public Function DeflateBase64(baInput() As Byte, sText As String, Optional ByVal
     If DeflateBase64 Then sText = ToBase64String(baOutput)
 End Function
 
-#End If                                          ' ImplInflate
+#End If                           ' ImplInflate
 
-#End If                                          ' ImplDecompress
+#End If                           ' ImplDecompress
 
 '= Crypto ================================================================
 
@@ -1616,7 +1616,7 @@ End Function
 
 Private Function pvCryptoAesInit(baPass() As Byte, baSalt() As Byte, ByVal lKeyLen As Long, nPassVer As Integer) As Boolean
     Dim baDerivedKey() As Byte
-    Dim lDummy    As Long                        '--- discarded
+    Dim lDummy    As Long         '--- discarded
     Dim hResult   As Long
     Dim sApiSource As String
 
@@ -1742,7 +1742,7 @@ Private Function pvCryptoAesCrypt( _
         Optional ByVal HashAfter As Boolean) As Boolean
     Dim lIdx      As Long
     Dim lPadSize  As Long
-    Dim lDummy    As Long                        '--- discarded
+    Dim lDummy    As Long         '--- discarded
     Dim hResult   As Long
     Dim sApiSource As String
 
@@ -1983,7 +1983,7 @@ Private Function pvVfsRead(uFile As UcsVfsFileType, ByVal lPtr As Long, ByVal lS
 End Function
 
 Private Function pvVfsWrite(uFile As UcsVfsFileType, ByVal lPtr As Long, ByVal lSize As Long) As Long
-    Const MAX_STEP As Long = 2 ^ 24              '--- 16MB
+    Const MAX_STEP As Long = 2 ^ 24    '--- 16MB
     Dim lOffset   As Long
 
     If Not IsEmpty(uFile.BufferArray) Then
@@ -2130,7 +2130,7 @@ Private Function pvSetError(Optional Source As String, Optional Description As S
             Else
                 Debug.Print "Error in " & Source & ": " & Description, Timer
             End If
-        #End If                                  ' ImplLogging
+        #End If                   ' ImplLogging
         m_sLastError = Description
         If Not CanContinue Then
             m_bCancel = True
@@ -2348,7 +2348,7 @@ Public Function FromUtf8Array(baText() As Byte) As String
 End Function
 
 Private Function UnsignedAdd(ByVal lUnsignedPtr As Long, ByVal lSignedOffset As Long) As Long
-'--- note: safely add *signed* offset to *unsigned* ptr for *unsigned* retval w/o overflow in LARGEADDRESSAWARE processes
+    '--- note: safely add *signed* offset to *unsigned* ptr for *unsigned* retval w/o overflow in LARGEADDRESSAWARE processes
     UnsignedAdd = ((lUnsignedPtr Xor &H80000000) + lSignedOffset) Xor &H80000000
 End Function
 
@@ -2381,7 +2381,7 @@ QH:
     Set InitRegExp = oCache
 End Function
 
-#End If                                          ' Not ImplUseShared
+#End If                           ' Not ImplUseShared
 
 '=========================================================================
 ' Base class events
