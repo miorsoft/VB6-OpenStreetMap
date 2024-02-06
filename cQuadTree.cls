@@ -45,7 +45,7 @@ Private Sub Class_Initialize()
 End Sub
 
 
-Friend Sub Setup(ByVal Xleft, ByVal Ytop, ByVal Xright, ByVal Ydown, ByVal MyCapacity As Long)
+Friend Sub Setup(ByVal Xleft#, ByVal Ytop#, ByVal Xright#, ByVal Ydown#, ByVal MyCapacity As Long)
     X0 = Xleft
     X1 = Xright
     Y0 = Ytop
