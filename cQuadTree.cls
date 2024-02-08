@@ -43,6 +43,9 @@ Private GPY()     As Double
 Public GhostNP    As Long
 Private GhostmaxNP As Long
 
+Private ImRoot    As Boolean
+
+
 Private Sub Class_Initialize()
     '    Subdivided = 0
 End Sub
@@ -107,16 +110,16 @@ Friend Sub InsertSinglePoint(ByVal X#, ByVal Y#, Index As Long, Optional isRoot 
 
     Dim Quadrant  As Long
 
-    If isRoot Then                 ' FOR GetPairsWDist
-        GhostNP = GhostNP + 1
-        If GhostNP > GhostmaxNP Then
-            GhostmaxNP = GhostNP * 2
-            ReDim Preserve GPX(GhostmaxNP)
-            ReDim Preserve GPY(GhostmaxNP)
+        If isRoot Then                 ' FOR GetPairsWDist
+            GhostNP = GhostNP + 1
+            If GhostNP > GhostmaxNP Then
+                GhostmaxNP = GhostNP * 2
+                ReDim Preserve GPX(GhostmaxNP)
+                ReDim Preserve GPY(GhostmaxNP)
+            End If
+            GPX(GhostNP) = X
+            GPY(GhostNP) = Y
         End If
-        GPX(GhostNP) = X
-        GPY(GhostNP) = Y
-    End If
 
     If NP < Capacity Then
         NP = NP + 1
@@ -176,6 +179,9 @@ Friend Sub InsertALLpoints(X() As Double, Y() As Double, Optional PTBound As Lon
     For I = 1 To PTBound
         InsertSinglePoint X(I), Y(I), I, isRoot
     Next
+
+    ImRoot = True 'isRoot
+
 End Sub
 
 
@@ -371,21 +377,22 @@ End Sub
 Friend Sub GetPairsWDist(ByVal Radius As Double, RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As Double, rDD() As Double, rPairsCount As Long, MaxNpairs As Long)
     Dim I         As Long
     '  USING GHOST
-    rPairsCount = 0
-    For I = 1 To GhostNP
-        QueryAroundPoint GPX(I), GPY(I), I, Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
-    Next
-
+        rPairsCount = 0
+        For I = 1 To GhostNP
+            QueryAroundPoint GPX(I), GPY(I), I, Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+        Next
+    
     '   Without GHOST
-    ''    For I = 1 To NP
-    ''        QueryAroundPoint PX(I), PY(I), Pidx(I), Radius, rP1, rP2, rDX, rDY, rDD, rPairsCount, MaxNpairs
-    ''    Next
-    ''    If Not (NotSubdivided) Then
-    ''        If Q1.NP Then Q1.GetPairsWDist Radius, rP1, rP2, rDX, rDY, rDD, rPairsCount, MaxNpairs
-    ''        If Q2.NP Then Q2.GetPairsWDist Radius, rP1, rP2, rDX, rDY, rDD, rPairsCount, MaxNpairs
-    ''        If Q3.NP Then Q3.GetPairsWDist Radius, rP1, rP2, rDX, rDY, rDD, rPairsCount, MaxNpairs
-    ''        If Q4.NP Then Q4.GetPairsWDist Radius, rP1, rP2, rDX, rDY, rDD, rPairsCount, MaxNpairs
-    ''    End If
+'    If ImRoot Then rPairsCount = 0
+'    For I = 1 To NP
+'        QueryAroundPoint PX(I), PY(I), pIDX(I), Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+'    Next
+'    If Subdivided Then
+'        If Q1.NP Then Q1.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+'        If Q2.NP Then Q2.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+'        If Q3.NP Then Q3.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+'        If Q4.NP Then Q4.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+'    End If
 
 End Sub
 
