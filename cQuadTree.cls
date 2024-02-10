@@ -13,11 +13,12 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public X0         As Double
+Public X0         As Double        'Quad Boundary
 Public Y0         As Double
 Public X1         As Double
 Public Y1         As Double
-Private MX        As Double
+
+Private MX        As Double        'Quad Center
 Private MY        As Double
 
 Private Q1        As cQuadTree
@@ -27,28 +28,22 @@ Private Q4        As cQuadTree
 
 'Private QUA(1 To 4) As cQuadTree
 
-
 Private Subdivided As Long
 
 Public Capacity   As Long
-Public NP         As Long
-Private MaxNP     As Long
+Public NP         As Long          ' N of Points
+Private MaxNP     As Long          ' (Obsolte)
 
-Private PX()      As Double
-Private PY()      As Double
-Private pIDX()    As Double
+Private px()      As Double        'Points Coordinates
+Private py()      As Double
+Private pIDX()    As Double        'Points Indexes
 '"Ghost Points" used in GetPairsWDist
 Private GPX()     As Double
 Private GPY()     As Double
 Public GhostNP    As Long
 Private GhostmaxNP As Long
 
-Private ImRoot    As Boolean
 
-
-Private Sub Class_Initialize()
-    '    Subdivided = 0
-End Sub
 
 
 Friend Sub Setup(ByVal Xleft#, ByVal Ytop#, ByVal Xright#, ByVal Ydown#, ByVal MyCapacity As Long)
@@ -60,6 +55,10 @@ Friend Sub Setup(ByVal Xleft#, ByVal Ytop#, ByVal Xright#, ByVal Ydown#, ByVal M
     Reset
 End Sub
 Friend Sub Reset()
+
+    ' Set N of point to 0
+    ' and continue with child nodes if they have points into them
+    ' So it's not needed to go through all level ( when they are empty)
     NP = 0
     GhostNP = 0
     Dim I         As Long
@@ -76,8 +75,10 @@ Friend Sub Reset()
 End Sub
 
 Private Sub Subdivide()
+    ' Subdivede the Quadtree
     Dim I         As Long
 
+    'Compute Center Point
     MX = (X0 + X1) * 0.5
     MY = (Y0 + Y1) * 0.5
 
@@ -93,10 +94,11 @@ Private Sub Subdivide()
     '        Next
     '    End If
 
-    Q1.Setup X0, Y0, MX, MY, Capacity
-    Q2.Setup MX, Y0, X1, MY, Capacity
-    Q3.Setup X0, MY, MX, Y1, Capacity
-    Q4.Setup MX, MY, X1, Y1, Capacity
+    ' Setup the 4 chiled nodes
+    Q1.Setup X0, Y0, MX, MY, Capacity    'TopLeft
+    Q2.Setup MX, Y0, X1, MY, Capacity    'TopRight
+    Q3.Setup X0, MY, MX, Y1, Capacity    'BottomLeft
+    Q4.Setup MX, MY, X1, Y1, Capacity    'BottmRight
 
     '    QUA(1).Setup X0, Y0, MX, MY, Capacity
     '    QUA(2).Setup MX, Y0, X1, MY, Capacity
@@ -110,37 +112,45 @@ Friend Sub InsertSinglePoint(ByVal X#, ByVal Y#, Index As Long, Optional isRoot 
 
     Dim Quadrant  As Long
 
-        If isRoot Then                 ' FOR GetPairsWDist
-            GhostNP = GhostNP + 1
-            If GhostNP > GhostmaxNP Then
-                GhostmaxNP = GhostNP * 2
-                ReDim Preserve GPX(GhostmaxNP)
-                ReDim Preserve GPY(GhostmaxNP)
-            End If
-            GPX(GhostNP) = X
-            GPY(GhostNP) = Y
-        End If
 
-    If NP < Capacity Then
+' This add a copy of inserted points
+' It is used in GetPairsWDist
+' Becose today I havent found another way to do GetPairsWDist
+
+    If isRoot Then                 ' FOR GetPairsWDist
+        GhostNP = GhostNP + 1
+        If GhostNP > GhostmaxNP Then
+            GhostmaxNP = GhostNP * 2
+            ReDim Preserve GPX(GhostmaxNP)
+            ReDim Preserve GPY(GhostmaxNP)
+        End If
+        GPX(GhostNP) = X
+        GPY(GhostNP) = Y
+    End If
+
+'---------------------------------------------------------------------
+' STANDARD QUADTREE
+
+    If NP < Capacity Then 'IF N of Points less than Capacity insert it
         NP = NP + 1
         If NP > MaxNP Then
+        ' Redim to Capacity
+        ' I found Better to do it Once instead of redim Often based on NP
             MaxNP = Capacity
-            ReDim PX(1 To Capacity)
-            ReDim PY(1 To Capacity)
+            ReDim px(1 To Capacity)
+            ReDim py(1 To Capacity)
             ReDim pIDX(1 To Capacity)
         End If
-        PX(NP) = X
-        PY(NP) = Y
+        px(NP) = X 'Inser Point
+        py(NP) = Y
         pIDX(NP) = Index
-
-    Else
+    Else 'N of point is Greater or equal to capacity, so no space to add one
 
         If Not (Subdivided) Then Subdivide
 
+        'Compute in which child quandrant we will insert the point
         If X > MX Then Quadrant = 1&
         If Y > MY Then Quadrant = Quadrant Or 2&
-
-
 
 
         '        Select Case Quadrant
@@ -151,6 +161,7 @@ Friend Sub InsertSinglePoint(ByVal X#, ByVal Y#, Index As Long, Optional isRoot 
         '        End Select
 
 
+        'Insert point in Appropriate Quadrant
         If Quadrant = 0& Then
             Q1.InsertSinglePoint X, Y, Index, False
         ElseIf Quadrant = 1& Then
@@ -180,8 +191,6 @@ Friend Sub InsertALLpoints(X() As Double, Y() As Double, Optional PTBound As Lon
         InsertSinglePoint X(I), Y(I), I, isRoot
     Next
 
-    ImRoot = True 'isRoot
-
 End Sub
 
 
@@ -192,6 +201,10 @@ Friend Sub QueryAroundPoint(ByVal CurrPointX#, ByVal CurrPointY#, ByVal CurrPoin
                             Rdy() As Double, _
                             rDD() As Double, _
                             rPairsCount As Long, MaxNpairs As Long)
+
+' Point coordinates and index is given as input.
+' It returns The Points Indexes
+' the DX , DY and DD Distances array of point whithin the R distance from given point
 
     Dim I         As Long
     Dim DX#, DY#, R2#, DD#
@@ -204,7 +217,7 @@ Friend Sub QueryAroundPoint(ByVal CurrPointX#, ByVal CurrPointY#, ByVal CurrPoin
 
     For I = 1 To NP
         If pIDX(I) > CurrPointIDX Then
-            DX = PX(I) - CurrPointX: DY = PY(I) - CurrPointY: DD = (DX * DX + DY * DY)
+            DX = px(I) - CurrPointX: DY = py(I) - CurrPointY: DD = (DX * DX + DY * DY)
             If DD < R2 Then
                 rPairsCount = rPairsCount + 1
                 If rPairsCount > MaxNpairs Then
@@ -242,7 +255,7 @@ End Sub
 
 
 Friend Sub QueryPointsInCircle(ByVal cX As Double, ByVal cY As Double, ByVal R As Double, _
-                               rDist() As Double, _
+                               rdist() As Double, _
                                rIdx() As Long, _
                                rPntCount As Long, MaxrPntCount As Long, Optional isRoot As Boolean = True)
     Dim I         As Long
@@ -257,25 +270,25 @@ Friend Sub QueryPointsInCircle(ByVal cX As Double, ByVal cY As Double, ByVal R A
     If isRoot Then rPntCount = 0   ': MaxrPntCount = 0
 
     For I = 1 To NP
-        DX = PX(I) - cX: DY = PY(I) - cY: DD = (DX * DX + DY * DY)
+        DX = px(I) - cX: DY = py(I) - cY: DD = (DX * DX + DY * DY)
         If DD < R2 Then
             rPntCount = rPntCount + 1
             If rPntCount > MaxrPntCount Then
                 MaxrPntCount = rPntCount * 2
                 ReDim Preserve rIdx(MaxrPntCount)
-                ReDim Preserve rDist(MaxrPntCount)
+                ReDim Preserve rdist(MaxrPntCount)
             End If
-            rDist(rPntCount) = DD
+            rdist(rPntCount) = DD
             rIdx(rPntCount) = pIDX(I)
 
         End If
     Next
 
     If Subdivided Then
-        If Q1.NP Then Q1.QueryPointsInCircle cX, cY, R, rDist, rIdx, rPntCount, MaxrPntCount, False
-        If Q2.NP Then Q2.QueryPointsInCircle cX, cY, R, rDist, rIdx, rPntCount, MaxrPntCount, False
-        If Q3.NP Then Q3.QueryPointsInCircle cX, cY, R, rDist, rIdx, rPntCount, MaxrPntCount, False
-        If Q4.NP Then Q4.QueryPointsInCircle cX, cY, R, rDist, rIdx, rPntCount, MaxrPntCount, False
+        If Q1.NP Then Q1.QueryPointsInCircle cX, cY, R, rdist, rIdx, rPntCount, MaxrPntCount, False
+        If Q2.NP Then Q2.QueryPointsInCircle cX, cY, R, rdist, rIdx, rPntCount, MaxrPntCount, False
+        If Q3.NP Then Q3.QueryPointsInCircle cX, cY, R, rdist, rIdx, rPntCount, MaxrPntCount, False
+        If Q4.NP Then Q4.QueryPointsInCircle cX, cY, R, rdist, rIdx, rPntCount, MaxrPntCount, False
         '
         '        For I = 1 To 4
         '            If QUA(I).NP Then QUA(I).QueryPointsInCircle cX, cY, R, rdist, rIdx, rPntCount, MaxrPntCount, False
@@ -299,7 +312,7 @@ Friend Sub QuerySquare(cX As Double, _
     If isRoot Then Found = 0       ': MaxFound = 0
 
     For I = 1 To NP
-        DX = PX(I) - cX: DY = PY(I) - cY
+        DX = px(I) - cX: DY = py(I) - cY
         If Abs(DX) < halfSide And Abs(DY) < halfSide Then
             Found = Found + 1
             If Found > MaxFound Then
@@ -309,8 +322,8 @@ Friend Sub QuerySquare(cX As Double, _
                 ReDim Preserve rpY(MaxFound)
 
             End If
-            rpX(Found) = PX(I)
-            rpY(Found) = PY(I)
+            rpX(Found) = px(I)
+            rpY(Found) = py(I)
             rpIDX(Found) = pIDX(I)
 
         End If
@@ -345,7 +358,7 @@ Friend Sub QueryCircleOLD(ByVal cX As Double, ByVal cY As Double, ByVal R As Dou
     If isRoot Then Found = 0       ': maxfound = 0
 
     For I = 1 To NP
-        DX = PX(I) - cX: DY = PY(I) - cY: DD = (DX * DX + DY * DY)
+        DX = px(I) - cX: DY = py(I) - cY: DD = (DX * DX + DY * DY)
         If DD < R2 Then
             Found = Found + 1
             If Found > MaxFound Then
@@ -355,8 +368,8 @@ Friend Sub QueryCircleOLD(ByVal cX As Double, ByVal cY As Double, ByVal R As Dou
                 ReDim Preserve rpY(MaxFound)
 
             End If
-            rpX(Found) = PX(I)
-            rpY(Found) = PY(I)
+            rpX(Found) = px(I)
+            rpY(Found) = py(I)
             rpIDX(Found) = pIDX(I)
 
         End If
@@ -377,22 +390,24 @@ End Sub
 Friend Sub GetPairsWDist(ByVal Radius As Double, RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As Double, rDD() As Double, rPairsCount As Long, MaxNpairs As Long)
     Dim I         As Long
     '  USING GHOST
-        rPairsCount = 0
-        For I = 1 To GhostNP
-            QueryAroundPoint GPX(I), GPY(I), I, Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
-        Next
-    
+    '--------------------------------------------------
+    rPairsCount = 0
+    For I = 1 To GhostNP
+        QueryAroundPoint GPX(I), GPY(I), I, Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+    Next
+    '--------------------------------------------------
     '   Without GHOST
-'    If ImRoot Then rPairsCount = 0
-'    For I = 1 To NP
-'        QueryAroundPoint PX(I), PY(I), pIDX(I), Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
-'    Next
-'    If Subdivided Then
-'        If Q1.NP Then Q1.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
-'        If Q2.NP Then Q2.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
-'        If Q3.NP Then Q3.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
-'        If Q4.NP Then Q4.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
-'    End If
+    ' Miss pairs Between Qaudtree "Lines"  [Can Someone fix it?]
+    '    If ImRoot Then rPairsCount = 0
+    '    For I = 1 To NP
+    '        QueryAroundPoint PX(I), PY(I), pIDX(I), Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+    '    Next
+    '    If Subdivided Then
+    '        If Q1.NP Then Q1.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+    '        If Q2.NP Then Q2.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+    '        If Q3.NP Then Q3.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+    '        If Q4.NP Then Q4.GetPairsWDist Radius, RP1, RP2, Rdx, Rdy, rDD, rPairsCount, MaxNpairs
+    '    End If
 
 End Sub
 
