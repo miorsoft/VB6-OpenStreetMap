@@ -348,37 +348,37 @@ Private Sub cmdNAVIGATE_MouseDown(Index As Integer, Button As Integer, Shift As 
     '' Do
 
     Select Case Index
-    Case 0
-        PanZoomChanged = True
-        PanYtoGo = PanYtoGo - 500 / ZoomToGo
+        Case 0
+            PanZoomChanged = True
+            PanYtoGo = PanYtoGo - 500 / ZoomToGo
 
-    Case 1
-        PanZoomChanged = True
-        PanYtoGo = PanYtoGo + 500 / ZoomToGo
-
-
-    Case 2
-        PanZoomChanged = True
-        PanXtoGo = PanXtoGo - 500 / ZoomToGo
-
-    Case 3
-        PanZoomChanged = True
-        PanXtoGo = PanXtoGo + 500 / ZoomToGo
+        Case 1
+            PanZoomChanged = True
+            PanYtoGo = PanYtoGo + 500 / ZoomToGo
 
 
-    Case 4
-        PanZoomChanged = True
-        ZoomToGo = ZoomToGo / 1.2
-    Case 5
-        PanZoomChanged = True
-        ZoomToGo = ZoomToGo * 1.2    '1.2
+        Case 2
+            PanZoomChanged = True
+            PanXtoGo = PanXtoGo - 500 / ZoomToGo
 
-    Case 6
-        PanZoomChanged = True
-        ZoomToGo = 1
-        PanX = CENPanX
-        PanY = CENPanY
-        ZoomToGo = PIC.Height / scrMaxY
+        Case 3
+            PanZoomChanged = True
+            PanXtoGo = PanXtoGo + 500 / ZoomToGo
+
+
+        Case 4
+            PanZoomChanged = True
+            ZoomToGo = ZoomToGo / 1.2
+        Case 5
+            PanZoomChanged = True
+            ZoomToGo = ZoomToGo * 1.2   '1.2
+
+        Case 6
+            PanZoomChanged = True
+            ZoomToGo = 1
+            PanX = CENPanX
+            PanY = CENPanY
+            ZoomToGo = PIC.Height / scrMaxY
     End Select
 
     '        SW.DRAW
@@ -559,6 +559,8 @@ End Sub
 Private Sub File1_Click()
     Dim FF        As Long
 
+
+    If Len(File1.FileName) = 0 Then Exit Sub
     Command1.Enabled = True
 
     FF = FreeFile
@@ -683,7 +685,7 @@ Private Sub Form_Resize()
 
 
     PIC.Left = Me.ScaleWidth * 0.5 - PIC.Width * 0.5
-    PIC.Top = 10                  'Me.ScaleHeight * 0.5 - PIC.Height * 0.5
+    PIC.Top = 10                        'Me.ScaleHeight * 0.5 - PIC.Height * 0.5
 
     picPanel.Top = PIC.Top
     picPanel.Left = PIC.Left + PIC.Width + 5
@@ -758,7 +760,7 @@ Private Sub PIC_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As
     yy = yfromScreen(Y * 1)
 
 
-    If Button = 1 Then            'Set car to Follow
+    If Button = 1 Then                  'Set car to Follow
         MDD = 1E+99
 
         If DoFollow Then
@@ -772,18 +774,12 @@ Private Sub PIC_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As
             txtFollow = Follow
 
         Else
-
             J = NearestTo(xx, yy, False)
-
-
             PanXtoGo = (Node(J).X)
             PanYtoGo = (Node(J).Y)
-
-
-
         End If
 
-    ElseIf Button = 2 Then        ' SET TARGET
+    ElseIf Button = 2 Then              ' SET TARGET
         N1 = NearestTo(xx * 1, yy * 1, True)
         CAR(Follow).SetEndNode N1
         If CAR(Follow).GetPATHNN = 0 Then CAR(Follow).RANDOMend
@@ -805,7 +801,7 @@ Private Sub PIC_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As
 
 End Sub
 
-Private Sub Command5_Click()      ' CMD LOADPURGED
+Private Sub Command5_Click()            ' CMD LOADPURGED
     Dim I         As Long
 
     LOADpurged
@@ -848,9 +844,9 @@ Public Sub MouseWheel(ByVal MouseKeys As Long, ByVal Rotation As Long, ByVal Xpo
 
     For I = 1 To Abs(Rotation) * 0.01
         If Rotation > 0 Then
-            ZoomToGo = ZoomToGo * 1.15    '1.18
+            ZoomToGo = ZoomToGo * 1.15  '1.18
         Else
-            ZoomToGo = ZoomToGo / 1.15    '1.18
+            ZoomToGo = ZoomToGo / 1.15  '1.18
 
         End If
     Next
@@ -862,6 +858,34 @@ End Sub
 
 Private Sub Picture1_Click()
 
+End Sub
+
+Private Sub PIC_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    Dim xx        As Double
+    Dim yy        As Double
+    Dim J&
+
+    xx = xfromScreen(X * 1)
+    yy = yfromScreen(Y * 1)
+
+
+    If Button = 1 Then                  'Set car to Follow
+        '        MDD = 1E+99
+        '        If DoFollow Then
+        '            For I = 1 To Ncars
+        '                DX = xx - CAR(I).Xfront
+        '                DY = yy - CAR(I).Yfront
+        '                DD = DX * DX + DY * DY
+        '                If DD < MDD Then MDD = DD: J = I
+        '            Next
+        '            Follow = J
+        '            txtFollow = Follow
+        '
+        '        Else 'Set PAN
+        J = NearestTo(xx, yy, False)
+        PanXtoGo = (Node(J).X)
+        PanYtoGo = (Node(J).Y)
+    End If
 End Sub
 
 Private Sub ZIP_Progress(ByVal FileIdx As Long, ByVal Current As Long, ByVal Total As Long, Cancel As Boolean)

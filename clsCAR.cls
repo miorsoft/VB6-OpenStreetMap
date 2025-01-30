@@ -23,9 +23,9 @@ Private dijPATH   As tRoad
 ''Public X1         As Double 'FRONT
 ''Public Y1         As Double
 
-Public Xrear      As Double       'REAR
+Public Xrear      As Double             'REAR
 Public yrear      As Double
-Public Xfront     As Double       'FRONT
+Public Xfront     As Double             'FRONT
 Public Yfront     As Double
 
 
@@ -419,6 +419,7 @@ Friend Sub DRIVE()
 
 
 
+
     If dijPATH.NN = 0 Then Exit Sub
 
     If PATHnextNode <> 0 Then
@@ -438,7 +439,7 @@ Friend Sub DRIVE()
         D1 = Sqr(DX * DX + DY * DY) + VEL * 10
 
 
-        P0 = 1 - D1 / (D1 + D2)   ': If P0 < 0 Then P0 = 0
+        P0 = 1 - D1 / (D1 + D2)         ': If P0 < 0 Then P0 = 0
         P1 = 1 - P0
 
 
@@ -675,6 +676,7 @@ Friend Sub DRIVE3()
 
     Dim CA#, SA#
 
+
     If dijPATH.NN = 0 Then Exit Sub
 
     If PATHnextNode <> 0 Then
@@ -706,7 +708,7 @@ Friend Sub DRIVE3()
         D1 = Sqr(DX * DX + DY * DY) + VEL * 50
         '        End If
 
-        P1 = D1 / (D1 + Dist2NEXT)    ': If P0 < 0 Then P0 = 0
+        P1 = D1 / (D1 + Dist2NEXT)      ': If P0 < 0 Then P0 = 0
         P0 = 1 - P1
 
         DX = DX * P0 + Dx2 * P1
@@ -742,7 +744,7 @@ Friend Sub DRIVE3()
 
 
 
-        If Dist2NEXT < 40 Then    '30
+        If Dist2NEXT < 40 Then          '30
             '            v = NextrANG * 0.001
             '            VELtoGO = VELtoGO - v
             '            '                     VELtoGO = (1 - NextrANG) * 0.12
@@ -754,7 +756,7 @@ Friend Sub DRIVE3()
             'VELtoGO = VELtoGO * 0.96 + 0.04 * 0.13 * (1 - NextrANG) '* (0.2 + Dist2NEXT * 0.025)
             'If VELtoGO < 0.05 Then VELtoGO = 0.05
 
-            If VELtoGO > 0.075 Then VELtoGO = VELtoGO - NextrANG * 0.001
+            If VELtoGO > 0.075 Then VELtoGO = VELtoGO - NextrANG * 0.01
         End If
 
 
@@ -810,7 +812,7 @@ Friend Sub DRIVE3()
         DX = Node(NEXTnode).X - Xfront
         DY = Node(NEXTnode).Y - Yfront
         D = (DX * DX + DY * DY)
-        If D < 15 Then            ' 5
+        If D < 15 Then                  ' 5
             PATHnextNode = PATHnextNode + 1
             If PATHnextNode > dijPATH.NN Then
                 STARTnode = NEXTnode
@@ -976,7 +978,7 @@ Public Sub CoumputeFuturepos()
                 .DY(.N - 1) = SA
                 If TOTPercorsa > DaPercorere Then
                     .D(.N - 1) = LineLen - (TOTPercorsa - DaPercorere)
-                Else              'FineCorsa
+                Else                    'FineCorsa
                     .D(.N - 1) = LineLen
                 End If
             End With

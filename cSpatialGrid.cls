@@ -217,7 +217,7 @@ Friend Sub InsertALLpoints(X() As Double, Y() As Double, Optional LimitNofPointT
 
 
 
-    If LimitNofPointTo Then       ' To avoid pre-Call REDIMing of X Y in some cases
+    If LimitNofPointTo Then             ' To avoid pre-Call REDIMing of X Y in some cases
         u = LimitNofPointTo
     Else
         u = UBound(X)
@@ -249,7 +249,7 @@ Private Sub pvAddToCell(ByVal cellX As Long, ByVal cellY As Long, ByVal currPind
     With CELL(cellX, cellY)
         .NP = .NP + 1
         If .NP > .MaxNP Then
-            .MaxNP = .NP + 64     '* 2
+            .MaxNP = .NP + 64           '* 2
             ReDim Preserve .pIDX(.MaxNP)
         End If
         .pIDX(.NP) = currPindex
@@ -305,7 +305,7 @@ Friend Sub GetPairs(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As Doub
             With CELL(X, Y)
 
 
-                For I = 1& To .NP    '- 1& ' Should be -1& to do only SELF but so we can do even others
+                For I = 1& To .NP       '- 1& ' Should be -1& to do only SELF but so we can do even others
                     ii = .pIDX(I)
                     PXI = PX(ii)
                     PYI = PY(ii)
@@ -366,7 +366,7 @@ Friend Sub GetPairs(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As Doub
     For X = 0& To cWm1
         Xp1 = X + 1&
         With CELL(X, Y)
-            For I = 1& To .NP     '- 1& ' Should be -1& to do only SELF but so we can do even others
+            For I = 1& To .NP           '- 1& ' Should be -1& to do only SELF but so we can do even others
                 ii = .pIDX(I)
                 PXI = PX(ii)
                 PYI = PY(ii)
@@ -401,7 +401,7 @@ Friend Sub GetPairs(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As Doub
 
 
         With CELL(X, 0&)
-            For I = 1& To .NP     '- 1& ' Should be -1& to do only SELF but so we can do even others
+            For I = 1& To .NP           '- 1& ' Should be -1& to do only SELF but so we can do even others
                 ii = .pIDX(I)
                 PXI = PX(ii)
                 PYI = PY(ii)
@@ -447,7 +447,7 @@ Friend Sub GetPairs(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As Doub
     For Y = 0& To cHm1
         Yp1 = Y + 1&
         With CELL(X, Y)
-            For I = 1& To .NP     '- 1& ' Should be -1& to do only SELF but so we can do even others
+            For I = 1& To .NP           '- 1& ' Should be -1& to do only SELF but so we can do even others
                 ii = .pIDX(I)
                 PXI = PX(ii)
                 PYI = PY(ii)
@@ -559,7 +559,7 @@ Friend Sub GetPairsWDist(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As
             Xp1 = X + 1&
             With CELL(X, Y)
 
-                For I = 1& To .NP    '- 1& ' Should be -1 to do only SELF but so we can do even others
+                For I = 1& To .NP       '- 1& ' Should be -1 to do only SELF but so we can do even others
                     ii = .pIDX(I)
                     PXI = PX(ii)
                     PYI = PY(ii)
@@ -625,7 +625,7 @@ Friend Sub GetPairsWDist(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As
     For X = 0& To cWm1
         Xp1 = X + 1&
         With CELL(X, Y)
-            For I = 1& To .NP     '- 1& ' Should be -1 to do only SELF but so we can do even others
+            For I = 1& To .NP           '- 1& ' Should be -1 to do only SELF but so we can do even others
                 ii = .pIDX(I)
                 PXI = PX(ii)
                 PYI = PY(ii)
@@ -663,7 +663,7 @@ Friend Sub GetPairsWDist(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As
         '    |\
         '    O O
         With CELL(X, 0&)
-            For I = 1& To .NP     '- 1& ' Should be -1 to do only SELF but so we can do even others
+            For I = 1& To .NP           '- 1& ' Should be -1 to do only SELF but so we can do even others
                 ii = .pIDX(I)
                 PXI = PX(ii)
                 PYI = PY(ii)
@@ -713,7 +713,7 @@ Friend Sub GetPairsWDist(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As
     For Y = 0& To cHm1
         Yp1 = Y + 1&
         With CELL(X, Y)
-            For I = 1& To .NP     '- 1& ' Should be -1 to do only SELF but so we can do even others
+            For I = 1& To .NP           '- 1& ' Should be -1 to do only SELF but so we can do even others
                 ii = .pIDX(I)
                 PXI = PX(ii)
                 PYI = PY(ii)
@@ -778,11 +778,11 @@ Friend Sub GetPairsWDist(RP1() As Long, RP2() As Long, Rdx() As Double, Rdy() As
 End Sub
 
 Private Sub pvAddPair(ByVal P1 As Long, ByVal P2 As Long, ByVal DX As Double, ByVal DY As Double)
-    Stop
+Stop
 
     Npairs = Npairs + 1
     If Npairs > MAXNpair Then
-        MAXNpair = Npairs + 128   '* 2
+        MAXNpair = Npairs + 128         '* 2
         ReDim Preserve PairP1(MAXNpair)
         ReDim Preserve PairP2(MAXNpair)
         ReDim Preserve PairDX(MAXNpair)
@@ -859,7 +859,7 @@ Friend Sub QueryPointsInCircle(cX As Double, cY As Double, R As Double, rDist() 
     Npairs = 0
 
     gg = R \ GridSize
-    If gg < 1 Then gg = 1         'Commented 2023
+    If gg < 1 Then gg = 1               'Commented 2023
     'If GG < 1 Then Stop
     'If GG > 2 Then Debug.Print GG & "  " & R
 
@@ -907,7 +907,7 @@ Private Sub pvAddPointWDist(ByVal P1 As Long, ByVal D As Double)
             MAXNpair = Npairs * 1.3
         Else
 
-            MAXNpair = Npairs * 1.5    'Npairs + 8
+            MAXNpair = Npairs * 1.5     'Npairs + 8
         End If
 
         ReDim Preserve PairP1(MAXNpair)

@@ -40,7 +40,7 @@ Private Type tPoint
     Fixed         As Long
     solid         As Long
 
-    WAdirX        As Double       'Wheel axis direction
+    WAdirX        As Double             'Wheel axis direction
     WAdirY        As Double
 
 End Type
@@ -370,14 +370,16 @@ End Sub
 Public Sub Points_Update()
     Dim I         As Long
     Dim D#
+    Dim IC#
     For I = 1 To PhysicNP
         With Points(I)
 
             If Not (.Fixed) Then
                 '            If .numConstraints = 0 Then .numConstraints = 1
                 If .numConstraints Then
-                    .X = .X + .dispX / .numConstraints
-                    .Y = .Y + .dispY / .numConstraints
+                    IC = 1# / .numConstraints
+                    .X = .X + .dispX * IC
+                    .Y = .Y + .dispY * IC
                 End If
                 '            If (.x < 0) Then
                 '                .xPrev = .x: .x = 0
@@ -389,8 +391,8 @@ Public Sub Points_Update()
                 '            ElseIf (.y > maxH) Then
                 '                .yPrev = .y: .y = maxH
                 '            End If
-                .u = .X - .xPrev  '+ GravityX    '+ This.world.gravX
-                .v = .Y - .yPrev  '+ GravityY    '+ This.world.gravY
+                .u = .X - .xPrev        '+ GravityX    '+ This.world.gravX
+                .v = .Y - .yPrev        '+ GravityY    '+ This.world.gravY
                 .u = .u * 0.97
                 .v = .v * 0.97
 
@@ -693,7 +695,7 @@ Public Function ClosestPtSegmentSegment(p1X#, p1Y#, q1X#, q1Y#, _
     If (A <= EPSILON) Then
         '// First segment degenerates into a point
         S = 0#
-        T = F / E                 '; // s = 0 => t = (b*s + f) / e = f / e
+        T = F / E                       '; // s = 0 => t = (b*s + f) / e = f / e
         '        t = Clamp(t, 0.0f, 1.0f);
         If T < 0 Then T = 0
         If T > 1 Then T = 1
@@ -711,7 +713,7 @@ Public Function ClosestPtSegmentSegment(p1X#, p1Y#, q1X#, q1Y#, _
             '// The general nondegenerate case starts here
             'float b = Dot(d1, d2);
             B = D1x * D2x + D1y * D2y
-            denom = A * E - B * B    '; // Always nonnegative
+            denom = A * E - B * B       '; // Always nonnegative
             '// If segments not parallel, compute closest point on L1 to L2 and
             '// clamp to segment S1. Else pick arbitrary s (here 0)
             If (denom) Then

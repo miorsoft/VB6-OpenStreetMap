@@ -140,7 +140,7 @@ Friend Function DIJKSTRA(ByVal Ifrom As Long, ByVal Ito As Long) As tRoad
     For I = 1 To NNode
         With Node(I)
             .dCost = 1E+99
-            .dVisited = 0         'False
+            .dVisited = 0               'False
             .dBestfrom = 0
         End With
     Next
@@ -160,9 +160,9 @@ Friend Function DIJKSTRA(ByVal Ifrom As Long, ByVal Ito As Long) As tRoad
         '            frmMain.Caption = "Visited:" & cntr & "    " & Curr: DoEvents
         '            frmMain.PIC.Refresh
         '        End If
-        Curr = fnFindLowestCostNODE    'first time will be Ifrom, since we set  Node(Ifrom).dCost = 0
+        Curr = fnFindLowestCostNODE     'first time will be Ifrom, since we set  Node(Ifrom).dCost = 0
 
-        Node(Curr).dVisited = -1  'True
+        Node(Curr).dVisited = -1        'True
 
         For I = 1 To Node(Curr).NNext
 
@@ -202,7 +202,7 @@ Friend Function DIJKSTRA(ByVal Ifrom As Long, ByVal Ito As Long) As tRoad
 
     'REVERSE------------------------------------------
     Do
-        With dijPATH              'Walk from end to Start
+        With dijPATH                    'Walk from end to Start
             .NN = .NN + 1
             If .NN > MaxNN Then MaxNN = 1 + .NN * 1.5: ReDim Preserve .N(MaxNN)
             .N(.NN) = Curr

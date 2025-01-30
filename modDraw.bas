@@ -160,8 +160,8 @@ Public Sub InitDraw()
     Next
 
 
-    KX = scrMaxX / (mapMaxX)      '- MinX)
-    KY = scrMaxY / (mapMaxY)      ' - MinY)
+    KX = scrMaxX / (mapMaxX)            '- MinX)
+    KY = scrMaxY / (mapMaxY)            ' - MinY)
 
     'PanX = XtoScreen((mapMaxX + MinX) * 0.5)
     'PanY = YtoScreen((mapMaxY + MinY) * 0.5)
@@ -244,8 +244,8 @@ Public Sub DRAWMAP()
         STATCars = 0
 
 
-        Dash1 = Zoom * 4          '4          '2.5
-        Dash2 = Zoom * 8          '15         '*8
+        Dash1 = Zoom * 4                '4          '2.5
+        Dash2 = Zoom * 8                '15         '*8
 
 
         scr2WorldX0 = xfromScreen(ClipLEFT): scr2WorldY0 = yfromScreen(ClipTOP)
@@ -983,8 +983,8 @@ Public Sub DRAWMAPandCARS()
     STATCars = 0
 
 
-    Dash1 = Zoom * 4              '4          '2.5
-    Dash2 = Zoom * 8              '15         '*8
+    Dash1 = Zoom * 4                    '4          '2.5
+    Dash2 = Zoom * 8                    '15         '*8
 
 
     scr2WorldX0 = xfromScreen(ClipLEFT): scr2WorldY0 = yfromScreen(ClipTOP)
@@ -1083,7 +1083,7 @@ Public Sub DRAWMAPandCARS()
                         'Stop
                         CC.Restore
 
-                    Else          'Building /Area / Block
+                    Else                'Building /Area / Block
 
                         If Zoom > 0.85 Then
                             CC.Fill True
@@ -1288,7 +1288,7 @@ Public Sub DRAWMAPandCARS()
                                             ''End If
 
 
-                                            If Zoom > 2# Then    '''' WHATE LINES
+                                            If Zoom > 2# Then    '''' WHITE LINES
                                                 If Not (.isNotAsphalt) Then
                                                     '                                            CC.SetLineCap CAIRO_LINE_CAP_BUTT
 
@@ -1523,7 +1523,7 @@ Public Sub DRAWMAPandCARS()
                             txtL = Len(.Name)
 
                             TW = txtL * 10    ' 8.5
-                            TH = 22    '19
+                            TH = 22     '19
                             TTW = TW
                             While TW > 120    '100
                                 TTW = TW

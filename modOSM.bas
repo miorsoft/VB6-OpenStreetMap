@@ -4,17 +4,17 @@ Option Explicit
 'https://wiki.openstreetmap.org/wiki/Map_features
 
 Public Type tNode
-    fileID        As Currency     'could be bigger than LONG 4bytes (currency 8 Bytes)
+    fileID        As Currency           'could be bigger than LONG 4bytes (currency 8 Bytes)
     id            As Long
     X             As Double
     Y             As Double
     Used          As Boolean
-    scrX          As Double       ' Long
-    scrY          As Double       ' Long
+    scrX          As Double             ' Long
+    scrY          As Double             ' Long
 
     'Dijkstra--------------------------------
-    NNext         As Long         'N of nodes reachable from this Node
-    NEXTnode()    As Long         'List of Nodes reachable from this Node
+    NNext         As Long               'N of nodes reachable from this Node
+    NEXTnode()    As Long               'List of Nodes reachable from this Node
     NextNodeCOST() As Double
     NEXTNodeWay() As Long
     NextNodeWAYSegment() As Long
@@ -22,11 +22,11 @@ Public Type tNode
     dIsWay        As Boolean
     dCost         As Double
     dBestfrom     As Long
-    dVisited      As Long         'Boolean
-    ONEWAY        As Long         '??  Boolean 'Long  Maybe Useless
+    dVisited      As Long               'Boolean
+    ONEWAY        As Long               '??  Boolean 'Long  Maybe Useless
     '------------------------------------------------
 
-    Layer         As Long         'For bridges / tunnels
+    Layer         As Long               'For bridges / tunnels
 
     Traffic       As Double
 
@@ -35,19 +35,19 @@ End Type
 Public Type tRoad
     fileID        As Long
     id            As Long
-    NN            As Long         ' Number of nodes of the road
-    invNN         As Double       '1/NN
-    N()           As Currency     'List of Nodes
+    NN            As Long               ' Number of nodes of the road
+    invNN         As Double             '1/NN
+    N()           As Currency           'List of Nodes
 
-    SegDX()       As Double       ' 1 to NN-1
-    SegDY()       As Double       'Segment direction and angle
+    SegDX()       As Double             ' 1 to NN-1
+    SegDY()       As Double             'Segment direction and angle
     SegAngle()    As Double
 
     RoadWidth     As Double
 
     Name          As String
     wayType       As String
-    isDRIVEABLE   As Boolean      ' Can be used by Cars
+    isDRIVEABLE   As Boolean            ' Can be used by Cars
 
     IsStreetSideParkable As Boolean
 
@@ -69,7 +69,7 @@ Public Type tRoad
     Layer         As Long
     Lanes         As Long
 
-    OneWayDirections As Long      'Drivable ways 0= Both :  1 = Forward -1=Backward
+    OneWayDirections As Long            'Drivable ways 0= Both :  1 = Forward -1=Backward
 
 
     'bound Box
@@ -79,7 +79,7 @@ Public Type tRoad
     BBY2          As Double
 
     'World Center
-    CenterX       As Double       ' NON SALVARE
+    CenterX       As Double             ' NON SALVARE
     CenterY       As Double
 
     R             As Double
@@ -151,8 +151,9 @@ Public Sub ReadOSM(FN As String)
     MapEast = -1E+99
     MapSouth = -1E+99
 
-    minLayer = 0
-    maxLayer = 0
+    minLayer = 100000000#
+    maxLayer = -100000000#
+
 
 
     NNode = 0
@@ -266,100 +267,100 @@ Public Sub ReadOSM(FN As String)
 
 
                         Select Case K
-                        Case "highway", "railway"
+                            Case "highway", "railway"
 
-                            .wayType = Replace$(v, ",", ".")
+                                .wayType = Replace$(v, ",", ".")
 
-                            .isDRIVEABLE = _
-                            (.wayType <> "pedestrian" And _
-                             .wayType <> "path" And _
-                             .wayType <> "steps" And _
-                             .wayType <> "footway" And _
-                             .wayType <> "cycleway" And _
-                             .wayType <> "rail" And _
-                             K <> "railway")
-
-
-                            If v = "mini_roundabout" Then
-                                .OneWayDirections = 1
-                            End If
+                                .isDRIVEABLE = _
+                                (.wayType <> "pedestrian" And _
+                                 .wayType <> "path" And _
+                                 .wayType <> "steps" And _
+                                 .wayType <> "footway" And _
+                                 .wayType <> "cycleway" And _
+                                 .wayType <> "rail" And _
+                                 K <> "railway")
 
 
-                            If K = "railway" And .wayType = "rail" Then .IsRailWay = True
-
-
-                        Case "name"
-                            .Name = v
-
-                        Case "width"
-                            .RoadWidth = Val(RemoveM(v))    '6M' '-------------------------------------TO DO
-
-
-
-
-                        Case "building"
-                            If v <> "no" Then
-                                .IsBuilding = True
-                                If .Name = vbNullString Then
-                                    If v <> "yes" And v <> "hut" And v <> "roof" And _
-                                       v <> "residential" And v <> "detached" And _
-                                       v <> "house" And _
-                                       v <> "apartments" _
-                                       Then .Name = v
+                                If v = "mini_roundabout" Then
+                                    .OneWayDirections = 1
                                 End If
-                            End If
-
-                        Case "area"
-                            If v <> "no" Then .IsArea = True
-
-                        Case "waterway"
-                            If v = "riverbank" Then .IsWater = True
-
-                        Case "leisure"
-                            If v <> "no" Then .IsLeisure = True
-                            If v = "swimming_pool" Then .IsLeisure = True: .Name = "Swimming Pool"
-
-                        Case "amenity"
-                            .IsAmenity = True
-                            If .Name = vbNullString Then .Name = v
-                            If .Name = "bench" Then .IsAmenity = False
-
-                        Case "lanes"
-                            If v = "1" Then
-                                '       .OneWayDirections = 1 '''   ???????????
-                            End If
-                            .Lanes = Val(v)
-                            If .Lanes = 0 Then .Lanes = 2    '''????
 
 
-                        Case "junction"
-                            If v = "roundabout" Then
-                                .OneWayDirections = 1
-                            End If
+                                If K = "railway" And .wayType = "rail" Then .IsRailWay = True
 
-                        Case "shop"
-                            .IsShop = True
-                            If .Name = vbNullString Then .Name = v
 
-                        Case "natural"
-                            If v = "water" Then
-                                .IsWater = True
+                            Case "name"
+                                .Name = v
+
+                            Case "width"
+                                .RoadWidth = Val(RemoveM(v))    '6M' '-------------------------------------TO DO
+
+
+
+
+                            Case "building"
+                                If v <> "no" Then
+                                    .IsBuilding = True
+                                    If .Name = vbNullString Then
+                                        If v <> "yes" And v <> "hut" And v <> "roof" And _
+                                           v <> "residential" And v <> "detached" And _
+                                           v <> "house" And _
+                                           v <> "apartments" _
+                                           Then .Name = v
+                                    End If
+                                End If
+
+                            Case "area"
+                                If v <> "no" Then .IsArea = True
+
+                            Case "waterway"
+                                If v = "riverbank" Then .IsWater = True
+
+                            Case "leisure"
+                                If v <> "no" Then .IsLeisure = True
+                                If v = "swimming_pool" Then .IsLeisure = True: .Name = "Swimming Pool"
+
+                            Case "amenity"
+                                .IsAmenity = True
                                 If .Name = vbNullString Then .Name = v
-                            End If
-                            '-------------------
+                                If .Name = "bench" Then .IsAmenity = False
 
-                        Case "surface"
-                            If v <> "asphalt" Then .isNotAsphalt = True
-
-                        Case "layer"
-                            .Layer = Val(v)
-
-
+                            Case "lanes"
+                                If v = "1" Then
+                                    '       .OneWayDirections = 1 '''   ???????????
+                                End If
+                                .Lanes = Val(v)
+                                If .Lanes = 0 Then .Lanes = 2    '''????
 
 
-                        Case "boundary"
+                            Case "junction"
+                                If v = "roundabout" Then
+                                    .OneWayDirections = 1
+                                End If
 
-                            .IsBoundary = True
+                            Case "shop"
+                                .IsShop = True
+                                If .Name = vbNullString Then .Name = v
+
+                            Case "natural"
+                                If v = "water" Then
+                                    .IsWater = True
+                                    If .Name = vbNullString Then .Name = v
+                                End If
+                                '-------------------
+
+                            Case "surface"
+                                If v <> "asphalt" Then .isNotAsphalt = True
+
+                            Case "layer"
+                                .Layer = Val(v)
+
+
+
+
+                            Case "boundary"
+
+                                .IsBoundary = True
 
 
 
@@ -368,16 +369,18 @@ Public Sub ReadOSM(FN As String)
 
 
 
-                        Case "oneway"
-                            If v = "yes" Or v = "true" Then
-                                .OneWayDirections = 1
-                            ElseIf v = "-1" Then
-                                .OneWayDirections = -1
-                            ElseIf v = "no" Then
-                                .OneWayDirections = 0
-                            End If
+                            Case "oneway"
+                                If v = "yes" Or v = "true" Then
+                                    .OneWayDirections = 1
+                                ElseIf v = "-1" Then
+                                    .OneWayDirections = -1
+                                ElseIf v = "no" Then
+                                    .OneWayDirections = 0
+                                End If
 
                         End Select
+
+                        'If .isNotAsphalt Then .Layer = -1
 
 
                         If InStr(1, K, "parking") Then
@@ -400,7 +403,9 @@ Public Sub ReadOSM(FN As String)
 
     SETPROGRESS "Sorting Ways..."
 
+
     SortWaysByLayer WAY, 1, NWay
+
 
 
     frmMain.Caption = "  " & NNode & "  Nodes and " & NWay & "  Ways  readed."
@@ -536,7 +541,7 @@ Private Sub DIJKSTRAsetup()
     MinX = 1E+99
     MinY = 1E+99
     For I = 1 To NNode
-        If Node(I).dIsWay Then    '2024
+        If Node(I).dIsWay Then          '2024
             If Node(I).X < MinX Then MinX = Node(I).X
             If Node(I).Y < MinY Then MinY = Node(I).Y
         End If
@@ -568,7 +573,7 @@ Private Sub DIJKSTRAsetup()
                 If X > .BBx2 Then .BBx2 = X
                 If Y > .BBY2 Then .BBY2 = Y
             Next
-            If .IsBuilding Then   'Some Random color
+            If .IsBuilding Then         'Some Random color
                 .R = Rnd * 2 - 1
                 .G = Rnd * 2 - 1
                 .B = Rnd * 2 - 1
@@ -603,6 +608,8 @@ Public Sub PURGEAndSave(FN As String)
                 If NID Then Node(.N(J)).Used = True
 
                 If .isDRIVEABLE Then
+
+
                     If .Layer > maxLayer Then maxLayer = .Layer
                     If .Layer < minLayer Then minLayer = .Layer
 
@@ -653,7 +660,7 @@ Public Sub PURGEAndSave(FN As String)
 
 
 
-    DIJKSTRAsetup                 '<---------------------------------------------
+    DIJKSTRAsetup                       '<---------------------------------------------
 
     '    SAVEPURGED
 
@@ -677,7 +684,7 @@ Public Sub SAVEPURGED()
     Print #1, minLayer
     Print #1, maxLayer
 
-    Print #1, NNode               ' ptsUSED
+    Print #1, NNode                     ' ptsUSED
     For I = 1 To NNode
         If (I And 1023&) = 0 Then SETPROGRESS "Saving Points... " & I, I / NNode
         'If Node(I).Used Then
@@ -800,7 +807,7 @@ Public Sub LOADpurged()
 
 
 
-    Input #1, S                   '"---------------------------------------------------"
+    Input #1, S                         '"---------------------------------------------------"
     Input #1, NWay
     ReDim WAY(NWay)
     For I = 1 To NWay
@@ -814,7 +821,7 @@ Public Sub LOADpurged()
                 DoEvents
             End If
 
-            Input #1, S           '"Way -------" & I
+            Input #1, S                 '"Way -------" & I
             Input #1, .NN
 
             ReDim .N(.NN)
@@ -831,7 +838,7 @@ Public Sub LOADpurged()
 
 
             Input #1, .wayType
-            Input #1, .Name       ': If LenB(.NAME) = 0 Then Stop
+            Input #1, .Name             ': If LenB(.NAME) = 0 Then Stop
 
             Input #1, S: .isDRIVEABLE = YesNo2Bool(S)
 
@@ -863,7 +870,7 @@ Public Sub LOADpurged()
 
     Close 1
 
-    DIJKSTRAsetup                 '<---------------------------------------------
+    DIJKSTRAsetup                       '<---------------------------------------------
 
     '    frmMain.Caption = "Done": DoEvents
 
@@ -941,3 +948,25 @@ Private Function SortWaysByLayer(WAys() As tRoad, ByVal Min As Long, ByVal Max A
     If (Low < Max) Then SortWaysByLayer WAys, Low, Max
 
 End Function
+'Private Function SortWaysByAsphalt(WAys() As tRoad, ByVal Min As Long, ByVal Max As Long)
+'    ' FROM HI to LOW  'https://www.vbforums.com/showthread.php?11192-quicksort
+'    Dim Low As Long, high As Long, temp As tRoad
+'    Dim TestDist As Boolean
+'    'Debug.Print min, max
+'    Low = Min: high = Max
+'    '    TestDist = (WAys(min).Layer + WAys(max).Layer) * 0.5
+'    TestDist = WAys((Min + Max) * 0.5).isNotAsphalt
+'    Do
+'
+'        Do While (WAys(Low).isNotAsphalt < TestDist): Low = Low + 1&: Loop
+'        Do While (WAys(high).isNotAsphalt > TestDist): high = high - 1&: Loop
+'
+'        If (Low <= high) Then
+'            temp = WAys(Low): WAys(Low) = WAys(high): WAys(high) = temp
+'            Low = Low + 1&: high = high - 1&
+'        End If
+'    Loop While (Low <= high)
+'    If (Min < high) Then SortWaysByAsphalt WAys, Min, high
+'    If (Low < Max) Then SortWaysByAsphalt WAys, Low, Max
+'
+'End Function

@@ -59,32 +59,32 @@ Private Function WindowProc(ByVal Lwnd As Long, ByVal Lmsg As Long, ByVal wParam
 
     Select Case Lmsg
 
-    Case WM_MOUSEWHEEL
+        Case WM_MOUSEWHEEL
 
-        MouseKeys = wParam And 65535
-        Rotation = wParam / 65536
-        Xpos = lParam And 65535
-        Ypos = lParam / 65536
+            MouseKeys = wParam And 65535
+            Rotation = wParam / 65536
+            Xpos = lParam And 65535
+            Ypos = lParam / 65536
 
-        Set fFrm = GetForm(Lwnd)
-        If fFrm Is Nothing Then
+            Set fFrm = GetForm(Lwnd)
+            If fFrm Is Nothing Then
 
-            ' it's not a form
-            'If Not IsOver(Lwnd, Xpos, Ypos) And IsOver(GetParent(Lwnd), Xpos, Ypos) Then
-            ' it's not over the control and is over the form,
-            ' so fire mousewheel on form (if it's not a dropped down combo)
-            If SendMessage(Lwnd, CB_GETDROPPEDSTATE, 0&, 0&) <> 1 Then
+                ' it's not a form
+                'If Not IsOver(Lwnd, Xpos, Ypos) And IsOver(GetParent(Lwnd), Xpos, Ypos) Then
+                ' it's not over the control and is over the form,
+                ' so fire mousewheel on form (if it's not a dropped down combo)
+                If SendMessage(Lwnd, CB_GETDROPPEDSTATE, 0&, 0&) <> 1 Then
 
-                GetForm(GetParent(Lwnd)).MouseWheel MouseKeys, Rotation, Xpos, Ypos
-                '            Exit Function ' Discard scroll message to control
+                    GetForm(GetParent(Lwnd)).MouseWheel MouseKeys, Rotation, Xpos, Ypos
+                    '            Exit Function ' Discard scroll message to control
+                End If
+                ' End If
+            Else
+
+
+                ' it's a form so fire mousewheel
+                If IsOver(fFrm.hwnd, Xpos, Ypos) Then fFrm.MouseWheel MouseKeys, Rotation, Xpos, Ypos
             End If
-            ' End If
-        Else
-
-
-            ' it's a form so fire mousewheel
-            If IsOver(fFrm.hwnd, Xpos, Ypos) Then fFrm.MouseWheel MouseKeys, Rotation, Xpos, Ypos
-        End If
     End Select
 
     WindowProc = CallWindowProc(GetProp(Lwnd, "PrevWndProc"), Lwnd, Lmsg, wParam, lParam)

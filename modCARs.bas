@@ -26,7 +26,7 @@ Public QT         As cQuadTree
 
 
 
-Public Const CarWidth As Double = 2    '1.8
+Public Const CarWidth As Double = 2     '1.8
 Public Const CarInterasse As Double = 2.2    '4.8 - CarWidth
 
 Public Const CarImageRes As Double = 50
@@ -35,7 +35,7 @@ Public Const CarImageResHalf As Double = CarImageRes * 0.5
 
 
 'Public Const DistFromCenterRoadLine As Double = 1.5 + 0.5 - 0.25
-Public Const kRoadW As Double = 6.4    '6.5
+Public Const kRoadW As Double = 6.4     '6.5
 Public Const DistFromCenterRoadLine As Double = kRoadW * 0.265
 
 Public Follow     As Long
@@ -140,7 +140,7 @@ Public Sub MAINLOOP()
 
         '     If CNT Mod 12 Then carscollision2
         'If CNT Mod 24 = 0 Then '25
-        If (CNT Mod 25&) = 0& Then    '25
+        If (CNT Mod 25&) = 0& Then      '25
             carscollision2
 
 
@@ -227,7 +227,7 @@ Public Sub LineLine(ByVal X1#, ByVal Y1#, ByVal X2#, ByVal Y2#, _
     Y43 = Y4 - Y3
     ' Denominator for A and B are the same, so store this calculation
     D = X43 * Y21 - Y43 * X21
-    If D = 0 Then Exit Sub        'Parallel
+    If D = 0 Then Exit Sub              'Parallel
     X31 = X3 - X1
     Y31 = Y3 - Y1
     D = 1# / D
@@ -395,7 +395,7 @@ Public Sub carscollision2()
 
 
     'GRID.ResetPoints
-    QT.Reset
+    QT.RESET
 
 
     For I = 1 To Ncars
@@ -408,11 +408,11 @@ Public Sub carscollision2()
     '    GRID.GetPairsWDist rP1, rP2, rDX, rDY, rDD, pCount
     pCount = 0
     QT.GetPairsWDist 30, RP1, RP2, Rdx, Rdy, rDD, pCount, maxPairs
-    frmMain.Caption = pCount & "   " & maxPairs
+    '    frmMain.Caption = pCount & "   " & maxPairs
 
     For K = 1 To pCount
 
-        If rDD(K) < 900 Then      '225
+        If rDD(K) < 900 Then            '225
             I = RP1(K)
             J = RP2(K)
             If CAR(I).Layer = CAR(J).Layer Then
@@ -619,7 +619,7 @@ Public Sub carscollision3()
 
 
     'GRID.ResetPoints
-    QT.Reset
+    QT.RESET
 
 
     For I = 1 To Ncars
@@ -636,7 +636,7 @@ Public Sub carscollision3()
 
     For K = 1 To pCount
 
-        If rDD(K) < 900 Then      '225
+        If rDD(K) < 900 Then            '225
             I = RP1(K)
             J = RP2(K)
             If CAR(I).Layer = CAR(J).Layer Then

@@ -18,13 +18,13 @@ Private Sub Main()
 
     With iccex
         .lngSize = LenB(iccex)
-        .lngICC = ICC_ALL_CLASSES    ' you really should customize this value from the available constants
+        .lngICC = ICC_ALL_CLASSES       ' you really should customize this value from the available constants
     End With
-    On Error Resume Next          ' error? Requires IEv3 or above
+    On Error Resume Next                ' error? Requires IEv3 or above
     hMod = LoadLibrary("shell32.dll")
     InitCommonControlsEx iccex
     If Err Then
-        InitCommonControls        ' try Win9x version
+        InitCommonControls              ' try Win9x version
         Err.Clear
     End If
     On Error GoTo 0

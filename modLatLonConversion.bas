@@ -224,6 +224,9 @@ Public Function LatLongToUTM(ByVal LAT As Double, ByVal LON As Double, _
     Dim LongOrigin As Double
     Dim eccPrimeSquared As Double
     Dim N#, T#, C#, A#, M#
+    Dim Si#
+    Dim Co#
+
 
     Dim LongTemp#, LatRad#, LongRad#, LongOriginRad#
 
@@ -231,12 +234,12 @@ Public Function LatLongToUTM(ByVal LAT As Double, ByVal LON As Double, _
 
 
     '    //Make sure the longitude is between -180.00 .. 179.9
-    LongTemp = (LON + 180) - Int((LON + 180) / 360) * 360 - 180    '; // -180.00 .. 179.9;
+    LongTemp = (LON + 180) - Int((LON + 180) * 2.77777777777778E-03) * 360 - 180    '; // -180.00 .. 179.9;
 
     LatRad = LAT * deg2rad
     LongRad = LongTemp * deg2rad
 
-    ZoneNumber = Int((LongTemp + 180) / 6) + 1
+    ZoneNumber = Int((LongTemp + 180) * 0.166666666666667) + 1
 
 
     '    If (LAT >= 56# And LAT < 64# And LongTemp >= 3# And LongTemp < 12#) Then
@@ -260,23 +263,25 @@ Public Function LatLongToUTM(ByVal LAT As Double, ByVal LON As Double, _
     'sprintf(UTMZone, "%d%c", ZoneNumber, UTMLetterDesignator(Lat));
 
     eccPrimeSquared = (eccSquared) / (1 - eccSquared)
+    Si = Sin(LatRad)
+    Co = Cos(LatRad)
+    T = Tan(LatRad)
+    N = aa / Sqr(1 - eccSquared * Si * Si)
+    T = T * T
+    C = eccPrimeSquared * Co * Co
+    A = Co * (LongRad - LongOriginRad)
 
-    N = aa / Sqr(1 - eccSquared * Sin(LatRad) * Sin(LatRad))
-    T = Tan(LatRad) * Tan(LatRad)
-    C = eccPrimeSquared * Cos(LatRad) * Cos(LatRad)
-    A = Cos(LatRad) * (LongRad - LongOriginRad)
+    M = aa * ((1 - eccSquared * 0.25 - 3 * eccSquared * eccSquared * 0.015625 - 5 * eccSquared * eccSquared * eccSquared * 0.00390625) * LatRad _
+              - (3 * eccSquared * 0.125 + 3 * eccSquared * eccSquared * 0.03125 + 45 * eccSquared * eccSquared * eccSquared * 0.0009765625) * Sin(2 * LatRad) _
+              + (15 * eccSquared * eccSquared * 0.00390625 + 45 * eccSquared * eccSquared * eccSquared * 0.0009765625) * Sin(4 * LatRad) _
+              - (35 * eccSquared * eccSquared * eccSquared * 3.25520833333333E-04) * Sin(6 * LatRad))
 
-    M = aa * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared / 256) * LatRad _
-              - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Sin(2 * LatRad) _
-              + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Sin(4 * LatRad) _
-              - (35 * eccSquared * eccSquared * eccSquared / 3072) * Sin(6 * LatRad))
-
-    retX = (k0 * N * (A + (1 - T + C) * A * A * A / 6# _
-                      + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * A * A * A * A * A / 120#) _
+    retX = (k0 * N * (A + (1 - T + C) * A * A * A * 0.166666666666667 _
+                      + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * A * A * A * A * A * 8.33333333333333E-03) _
                       + 500000#)
 
-    retY = (k0 * (M + N * Tan(LatRad) * (A * A / 2 + (5 - T + 9 * C + 4 * C * C) * A * A * A * A / 24 _
-                                         + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * A * A * A * A * A * A / 720#)))
+    retY = (k0 * (M + N * Tan(LatRad) * (A * A * 0.5 + (5 - T + 9 * C + 4 * C * C) * A * A * A * A * 4.16666666666667E-02 _
+                                         + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * A * A * A * A * A * A * 1.38888888888889E-03)))
     If (LAT < 0) Then retY = retY + 10000000#    ' //10000000 meter offset for southern hemisphere
 
     retY = -retY
